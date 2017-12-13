@@ -1,0 +1,15 @@
+<odoo>
+	<data>
+		<!-- sale order form inherit -->
+		<record id="sale_view_order_form_inherit" model="ir.ui.view">
+			<field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form"/>
+			<field name="arch" type="xml">
+				<field name="product_uom_qty" position="after">
+					<button type="action" name="%(hw_scale_sale.action_change_sale_weight)d" string="Update" states="confirmed,planned,progress" class="oe_link" attrs="{'invisible': [('state','=','done')]}"/>
+				</field>
+			</field>
+		</record>
+	</data>
+</odoo>

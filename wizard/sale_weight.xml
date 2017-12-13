@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pos_payment" model="ir.ui.view">
+            <field name="name">sale.order.weight.form</field>
+            <field name="model">sale.order.weight</field>
+            <field name="arch" type="xml">
+            <form string="Change Weight">
+                <group>
+                    <field name="orderline_id" />
+                    <field name="product_qty" />
+                    <!-- <field name="price_subtotal"/> -->
+                </group>
+                <footer>
+                    <button name="set_weight" string="Confirm" type="object" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-default"/>
+                </footer>
+            </form>
+            </field>
+        </record>
+
+        <record id="action_change_sale_weight" model="ir.actions.act_window">
+            <field name="name">Set weight</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.weight</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
