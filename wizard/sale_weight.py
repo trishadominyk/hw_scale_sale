@@ -21,7 +21,7 @@ class ChangeSaleWeight(models.TransientModel):
 
 		if 'orderline_id' in fields and not res.get('orderline_id') and self._context.get('active_model') == 'sale.order.line' and self._context.get('active_id'):
 			res['orderline_id'] = self._context['active_id']
-		if 'product_uom_qty' in fields and not res.get('qty') and res.get('orderline_id'):
+		if 'product_uom_qty' in fields and not res.get('product_uom_qty') and res.get('orderline_id'):
 			res['product_uom_qty'] = self.env['sale.order.line'].browse(res.get['orderline_id']).product_qty
 		# if 'price_subtotal' in fields and not res.get('price_subtotal') and res.get('orderline_id'):
 		# 	res['price_subtotal'] = self.env['sale.order.line'].browse(res.get['orderline_id']).price_subtotal
