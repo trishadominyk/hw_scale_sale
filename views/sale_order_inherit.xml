@@ -6,8 +6,8 @@
             <field name="model">sale.order</field>
 			<field name="inherit_id" ref="sale.view_order_form"/>
 			<field name="arch" type="xml">
-				<xpath expr="//field[@name='product_uom_qty']" position="before">
-					<button type="action" name="%(hw_scale_sale.action_change_sale_weight)d" string="Update" states="confirmed,planned,progress" class="oe_link" attrs="{'invisible': [('state','=','done')]}"/>
+				<xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="after">
+					<button type="action" name="%(hw_scale_sale.action_change_sale_weight)d" string="Reweigh" states="confirmed,planned,progress" class="oe_link" attrs="{'invisible': [('state', 'in', ('sale','done', 'cancel'))]}"/>
 				</xpath>
 			</field>
 		</record>
