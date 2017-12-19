@@ -9,7 +9,7 @@
                 <group>
                     <field name="orderline_id"/>
                     <!-- <field name="product_uom_qty"/> -->
-                    <field name="product_uom_qty" on_change="_update_price()"/>
+                    <field name="weight" on_change="_update_price()"/>
                     <field name="price_subtotal"/>
                 </group>
                 <footer>
