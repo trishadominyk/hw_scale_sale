@@ -20,6 +20,7 @@ class SOLineWeight(models.Model):
 
 	@api.depends('weight')
 	def _compute_uom_qty(self):
+		print 'COMPUTE QUANTITY'
 		# quantity formula = total weight / weight
 		for line in self:
 			weight = self.env['product.template'].browse(line.product_id).id.weight

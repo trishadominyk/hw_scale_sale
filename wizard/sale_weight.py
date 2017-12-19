@@ -16,6 +16,7 @@ class ChangeSaleWeight(models.TransientModel):
 
 	orderline_id = fields.Many2one('sale.order.line', string='Description', required=True, readonly=True)
 	weight = fields.Float(digits=(5, 2), string='Weight', required=True)
+	product_uom_qty = fields.Float(string='Quantity', readonly=True, store=True)
 	price_subtotal = fields.Float(string='Subtotal', readonly=True, store=True)
 
 	@api.model
@@ -25,6 +26,8 @@ class ChangeSaleWeight(models.TransientModel):
 			res['orderline_id'] = self._context['active_id']
 		if 'weight' in fields and not res.get('weight') and res.get('orderline_id'):
 			res['weight'] = self.env['sale.order.line'].browse(res.get('orderline_id')).weight
+		if 'product_uom_qty' in fields and not res.get('product_uom_qty') and res.get('orderline_id'):
+			res['product_uom_qty'] = self.env['sale.order.line'].browse(res.get('orderline_id')).product_uom_qty
 		if 'price_subtotal' in fields and not res.get('price_subtotal') and res.get('orderline_id'):
 			res['price_subtotal'] = self.env['sale.order.line'].browse(res.get('orderline_id')).price_subtotal
 
@@ -34,7 +37,15 @@ class ChangeSaleWeight(models.TransientModel):
 	def set_weight(self):
 		for wizard in self:
 			order = wizard.orderline_id
-			order.write({'weight': wizard.weight})
+			product = self.env['sale.order.line'].browse(wizard.orderline_id).id.product_id
+
+			weight = self.env['product.template'].browse(product).id.weight
+			qty = wizard.weight/weight
+
+			order.write({
+				'product_uom_qty': qty,
+				'weight': wizard.weight
+			})
 		return {}
 
 	@api.multi
