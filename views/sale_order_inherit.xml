@@ -8,6 +8,7 @@
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='order_line']/tree//field[@name='product_uom']" position="before">
 					<field name="weight" attrs="{'readonly': [('state', 'in', ('done','cancel'))]}"/>
+					<field name="weight_uom" readonly="1"/>
 					<button type="action" name="%(hw_scale_sale.action_change_sale_weight)d" string="Reweigh" states="confirmed,planned,progress" class="oe_link" attrs="{'invisible': [('state', 'in', ('sale','done', 'cancel'))]}"/>
 					<field name="weigh_type"/>
 				</xpath>

@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','hw_scale'],
+    'depends': ['base','sale', 'stock', 'hw_scale'],
 
     # always loaded
     'data': [

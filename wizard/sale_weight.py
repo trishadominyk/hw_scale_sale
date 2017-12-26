@@ -14,11 +14,6 @@ class ChangeSaleWeight(models.TransientModel):
 	_name = 'sale.order.weight'
 	_description = 'Sale set weight with weighing scale'
 
-	orderline_id = fields.Many2one('sale.order.line', string='Description', required=True, readonly=True)
-	weight = fields.Float(digits=(5, 2), string='Weight', required=True)
-	product_uom_qty = fields.Float(string='Quantity', readonly=True, store=True)
-	price_subtotal = fields.Float(string='Subtotal', readonly=True, store=True)
-
 	@api.model
 	def default_get(self,fields):
 		res = super(ChangeSaleWeight, self).default_get(fields)
@@ -48,15 +43,28 @@ class ChangeSaleWeight(models.TransientModel):
 			})
 		return {}
 
-	@api.multi
-	# @api.depends('weight','price_subtotal')
+	@api.depends('weight','product_uom_qty')
 	def _update_price(self):
 		for line in self:
-			print line
-			for product in self.env['sale.order.line'].search([('id','=',line.orderline_id)]):
-				print product
-				price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-				taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.weight, product=line.product_id, partner=line.order_id.partner_shipping_id)
-				
-				line.update({'price_subtotal': taxes['total_excluded']})
+			price = line.orderline_id.price_unit * (1 - (line.orderline_id.discount or 0.0) / 100.0)
+			taxes = line.orderline_id.tax_id.compute_all(price, line.orderline_id.order_id.currency_id, line.product_uom_qty, product=line.orderline_id.product_id, partner=line.orderline_id.order_id.partner_shipping_id)
 
+			line.update({
+				'price_subtotal': taxes['total_excluded']
+			})
+
+	@api.depends('weight','product_uom_qty')
+	def compute_qty(self):
+		for line in self:
+			weight = self.env['product.template'].browse(line.orderline_id.product_id).id.weight
+			total_weight = line.weight
+			qty = total_weight/weight
+
+			line.update({
+				'product_uom_qty': qty
+			})
+
+	orderline_id = fields.Many2one('sale.order.line', string='Description', required=True, readonly=True)
+	weight = fields.Float(digits=(5, 2), string='Weight', required=True)
+	product_uom_qty = fields.Float(compute='compute_qty', string='Quantity', readonly=True, store=True)
+	price_subtotal = fields.Float(compute='_update_price', string='Subtotal', readonly=True, store=True)
